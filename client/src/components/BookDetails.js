@@ -56,9 +56,9 @@ function BookDetails() {
       },
     });
     const data = await res.json();
-    console.log(data);
+    console.log(data._id);
     if (data) {
-      navigate("/form-fill", { state: data });
+      navigate("/form-fill", { state: data._id });
     }
   }
 
@@ -78,7 +78,7 @@ function BookDetails() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Cancel
           </Button>
           <Button variant="danger" onClick={handleDelete}>
             Delete

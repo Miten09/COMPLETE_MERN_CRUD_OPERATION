@@ -58,10 +58,10 @@ function CreateForm() {
   }
 
   async function handleUpdate(e) {
-    // console.log(location.state._id);
+    // console.log(location.state);
     e.preventDefault();
     const { title, author, pages, rating, date, country, quantity } = formData;
-    const res = await fetch(`/update/${location.state._id}`, {
+    const res = await fetch(`/update/${location.state}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -91,17 +91,27 @@ function CreateForm() {
     }
   }
 
-  const fetchData = () => {
+  const fetchData = async () => {
     // console.log(location);
-    setFormData({
-      title: location?.state?.title,
-      author: location?.state?.author,
-      pages: location?.state?.pages,
-      rating: location?.state?.rating,
-      date: location?.state?.date,
-      country: location?.state?.country,
-      quantity: location?.state?.quantity,
+    const res = await fetch(`/all-details/${location.state}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    const data = await res.json();
+    console.log(data);
+    if (data) {
+      setFormData({
+        title: data?.title,
+        author: data?.author,
+        pages: data?.pages,
+        rating: data?.rating,
+        date: data?.date,
+        country: data?.country,
+        quantity: data?.quantity,
+      });
+    }
   };
 
   useEffect(() => {
