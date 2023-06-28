@@ -1,6 +1,6 @@
 const Book = require("../model/bookSchema");
 
-const editUser = async (req, res, next) => {
+const editBooks = async (req, res, next) => {
   try {
     const _id = req.params.id;
     console.log(_id);
@@ -19,4 +19,4 @@ const editUser = async (req, res, next) => {
   }
 };
 
-module.exports = editUser;
+module.exports = editBooks;

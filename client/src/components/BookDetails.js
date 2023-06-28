@@ -114,7 +114,7 @@ function BookDetails() {
                   <td>{val.author}</td>
                   <td>{val.pages}</td>
                   <td>{val.rating}</td>
-                  <td>{val.date}</td>
+                  <td>{new Date(val.date).toDateString()}</td>
                   <td>{val.country}</td>
                   <td>{val.quantity}</td>
                   <td>

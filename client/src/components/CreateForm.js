@@ -4,6 +4,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 function CreateForm() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [error, seterror] = useState({
+    title: false,
+    author: false,
+    pages: false,
+    rating: false,
+    date: false,
+    country: false,
+    quantity: false,
+  });
 
   const [formData, setFormData] = useState({
     title: "",
@@ -18,6 +27,8 @@ function CreateForm() {
   function handleChange(e) {
     const name = e.target.name;
     const value = e.target.value;
+    console.log([name][0]);
+    seterror({ ...error, [name]: false });
     setFormData({
       ...formData,
       [name]: value,
@@ -48,7 +59,30 @@ function CreateForm() {
     console.log("resp", res);
 
     if (res.status === 402) {
-      window.alert("Plzz field all fields");
+      // window.alert("Plzz field all fields");
+      if (formData.title === "") {
+        if (formData.author === "") {
+          if (formData.pages === "") {
+            if (formData.rating === "") {
+              if (formData.date === "") {
+                if (formData.country === "") {
+                  if (formData.quantity === "") {
+                    seterror({
+                      title: true,
+                      author: true,
+                      pages: true,
+                      rating: true,
+                      date: true,
+                      country: true,
+                      quantity: true,
+                    });
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     } else if (res.status === 401) {
       window.alert("This book is already exists");
     } else {
@@ -77,7 +111,10 @@ function CreateForm() {
       }),
     });
     const data = await res.json();
-    if (data) {
+    console.log(res);
+    if (res.status === 401) {
+      window.alert("book already exists please update to another book");
+    } else {
       window.alert("Data updated successfully");
       setFormData({
         title: "",
@@ -133,6 +170,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Title"
             />
+            {error.title ? <p style={{ color: "red" }}>Enter title</p> : ""}
           </div>
           <div className="form-group col-md-6">
             <label htmlFor="inputPassword4">Author</label>
@@ -145,6 +183,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Author"
             />
+            {error.author ? <p style={{ color: "red" }}>Enter Author</p> : ""}
           </div>
         </div>
         <div className="form-group">
@@ -158,6 +197,7 @@ function CreateForm() {
             onChange={handleChange}
             placeholder="Pages"
           />
+          {error.pages ? <p style={{ color: "red" }}>Enter pages</p> : ""}
         </div>
         <div className="form-group">
           <label htmlFor="inputAddress2">Ratings</label>
@@ -170,6 +210,7 @@ function CreateForm() {
             name="rating"
             placeholder="Rating"
           />
+          {error.rating ? <p style={{ color: "red" }}>Enter rating</p> : ""}
         </div>
         <div className="form-row">
           <div className="form-group col-md-6">
@@ -183,6 +224,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Date"
             />
+            {error.date ? <p style={{ color: "red" }}>Enter date</p> : ""}
           </div>
           <div className="form-group col-md-6">
             <label htmlFor="inputCity">Country</label>
@@ -195,6 +237,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Country"
             />
+            {error.country ? <p style={{ color: "red" }}>Enter country</p> : ""}
           </div>
           <div className="form-group col-md-6">
             <label htmlFor="inputCity">Quantity</label>
@@ -207,6 +250,11 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Quantity"
             />
+            {error.quantity ? (
+              <p style={{ color: "red" }}>Enter quantity</p>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 

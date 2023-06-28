@@ -1,6 +1,6 @@
 const express = require("express");
 const Book = require("../model/bookSchema");
-const editUser = require("../middleware/editUser");
+const editBooks = require("../middleware/editUser");
 const router = express.Router();
 
 // Create Books In Database
@@ -60,7 +60,7 @@ router.get("/all-details", async (req, res) => {
 
 // Get Particular Details of Book Using MongoID from Database
 
-router.get("/all-details/:id", editUser, (req, res) => {
+router.get("/all-details/:id", editBooks, (req, res) => {
   res.send(req.rootUser);
 });
 module.exports = router;
@@ -82,12 +82,12 @@ router.delete("/delete/:id", async (req, res) => {
 router.patch("/update/:id", async (req, res) => {
   try {
     const _id = req.params.id;
+
     const updateBook = await Book.findByIdAndUpdate(_id, req.body, {
       new: true,
     });
-
     res.status(201).send(updateBook);
   } catch (error) {
-    console.log(error);
+    res.status(401).send(error);
   }
 });
