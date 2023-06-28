@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 function BookDetails() {
   const navigate = useNavigate();
   const [formDetails, setFormDetails] = useState([]);
   const [loading, setloading] = useState(true);
+  const [show, setshow] = useState(false);
 
   //   console.log(formDetails[0].state.title);
+
+  function handleClose() {
+    setshow(false);
+  }
+
   async function fetchData() {
     const res = await fetch("/all-details", {
       method: "GET",
@@ -22,9 +30,12 @@ function BookDetails() {
     }
   }
 
-  async function handleDelete(val) {
-    console.log(val._id);
-    const res = await fetch(`/delete/${val._id}`, {
+  async function handleDelete() {
+    const id = localStorage.getItem("id");
+    console.log(id);
+
+    setshow(false);
+    const res = await fetch(`/delete/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -57,6 +68,24 @@ function BookDetails() {
 
   return (
     <>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-center">Are you sure?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Do you really want to delete these records? This process cannot be
+          undone
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      ;
       <table className="table">
         <thead>
           <tr>
@@ -89,25 +118,24 @@ function BookDetails() {
                   <td>{val.country}</td>
                   <td>{val.quantity}</td>
                   <td>
-                    <button
-                      type="button"
-                      class="btn btn-warning"
+                    <Button
+                      variant="warning"
                       onClick={() => {
                         handleEdit(val);
                       }}
                     >
                       Edit
-                    </button>
-                    &nbsp;
-                    <button
-                      type="button"
-                      class="btn btn-danger"
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button
+                      variant="danger"
                       onClick={() => {
-                        handleDelete(val);
+                        setshow(true);
+                        localStorage.setItem("id", val._id);
                       }}
                     >
                       Delete
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               </React.Fragment>

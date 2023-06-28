@@ -3,6 +3,7 @@ import "./App.css";
 import CreateForm from "./components/CreateForm";
 import BookDetails from "./components/BookDetails";
 import Navbar from "./components/Navbar";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
