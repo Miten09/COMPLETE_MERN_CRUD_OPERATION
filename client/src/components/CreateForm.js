@@ -4,15 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 function CreateForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [error, seterror] = useState({
-    title: false,
-    author: false,
-    pages: false,
-    rating: false,
-    date: false,
-    country: false,
-    quantity: false,
-  });
+  const [error, seterror] = useState({});
 
   const [formData, setFormData] = useState({
     title: "",
@@ -23,6 +15,38 @@ function CreateForm() {
     country: "",
     quantity: "",
   });
+
+  // VALIDATION
+
+  const validateForm = () => {
+    let err = {};
+
+    if (formData.title === "") {
+      err.title = "Title Required";
+    }
+    if (formData.author === "") {
+      err.author = "author Required";
+    }
+    if (formData.pages === "") {
+      err.pages = "pages Required";
+    }
+    if (formData.rating === "") {
+      err.rating = "rating Required";
+    }
+    if (formData.date === "") {
+      err.date = "date Required";
+    }
+    if (formData.country === "") {
+      err.country = "country Required";
+    }
+    if (formData.quantity === "") {
+      err.quantity = "Quantity Required";
+    }
+
+    seterror({ ...err });
+
+    return Object.keys(err).length < 1;
+  };
 
   function handleChange(e) {
     const name = e.target.name;
@@ -38,56 +62,35 @@ function CreateForm() {
   async function handleSubmit(e) {
     e.preventDefault();
     // console.log("formdata", formData);
-    const { title, author, pages, rating, date, country, quantity } = formData;
-    const res = await fetch("/add-data", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title,
-        author,
-        pages,
-        rating,
-        date,
-        country,
-        quantity,
-      }),
-    });
-    const data = await res.json();
-    console.log("data", data);
-    console.log("resp", res);
+    let isValid = validateForm();
+    if (isValid) {
+      const { title, author, pages, rating, date, country, quantity } =
+        formData;
+      const res = await fetch("/add-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          author,
+          pages,
+          rating,
+          date,
+          country,
+          quantity,
+        }),
+      });
+      const data = await res.json();
+      console.log("data", data);
+      console.log("resp", res);
 
-    if (res.status === 402) {
-      // window.alert("Plzz field all fields");
-      if (formData.title === "") {
-        if (formData.author === "") {
-          if (formData.pages === "") {
-            if (formData.rating === "") {
-              if (formData.date === "") {
-                if (formData.country === "") {
-                  if (formData.quantity === "") {
-                    seterror({
-                      title: true,
-                      author: true,
-                      pages: true,
-                      rating: true,
-                      date: true,
-                      country: true,
-                      quantity: true,
-                    });
-                  }
-                }
-              }
-            }
-          }
-        }
+      if (res.status === 401) {
+        window.alert("This book is already exists");
+      } else if (res.status === 200) {
+        window.alert("Book added successfully");
+        navigate("/book-details");
       }
-    } else if (res.status === 401) {
-      window.alert("This book is already exists");
-    } else {
-      window.alert("Book added successfully");
-      navigate("/book-details");
     }
   }
 
@@ -170,7 +173,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Title"
             />
-            {error.title ? <p style={{ color: "red" }}>Enter title</p> : ""}
+            <span style={{ color: "red" }}>{error.title}</span>
           </div>
           <div className="form-group col-md-6">
             <label htmlFor="inputPassword4">Author</label>
@@ -183,7 +186,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Author"
             />
-            {error.author ? <p style={{ color: "red" }}>Enter Author</p> : ""}
+            <span style={{ color: "red" }}>{error.author}</span>
           </div>
         </div>
         <div className="form-group">
@@ -197,7 +200,7 @@ function CreateForm() {
             onChange={handleChange}
             placeholder="Pages"
           />
-          {error.pages ? <p style={{ color: "red" }}>Enter pages</p> : ""}
+          <span style={{ color: "red" }}>{error.pages}</span>
         </div>
         <div className="form-group">
           <label htmlFor="inputAddress2">Ratings</label>
@@ -210,7 +213,7 @@ function CreateForm() {
             name="rating"
             placeholder="Rating"
           />
-          {error.rating ? <p style={{ color: "red" }}>Enter rating</p> : ""}
+          <span style={{ color: "red" }}>{error.rating}</span>
         </div>
         <div className="form-row">
           <div className="form-group col-md-6">
@@ -224,7 +227,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Date"
             />
-            {error.date ? <p style={{ color: "red" }}>Enter date</p> : ""}
+            <span style={{ color: "red" }}>{error.date}</span>
           </div>
           <div className="form-group col-md-6">
             <label htmlFor="inputCity">Country</label>
@@ -237,7 +240,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Country"
             />
-            {error.country ? <p style={{ color: "red" }}>Enter country</p> : ""}
+            <span style={{ color: "red" }}>{error.country}</span>
           </div>
           <div className="form-group col-md-6">
             <label htmlFor="inputCity">Quantity</label>
@@ -250,11 +253,7 @@ function CreateForm() {
               onChange={handleChange}
               placeholder="Quantity"
             />
-            {error.quantity ? (
-              <p style={{ color: "red" }}>Enter quantity</p>
-            ) : (
-              ""
-            )}
+            <span style={{ color: "red" }}>{error.quantity}</span>
           </div>
         </div>
 

@@ -48,18 +48,8 @@ function BookDetails() {
     }
   }
 
-  async function handleEdit(val) {
-    const res = await fetch(`/all-details/${val._id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-    console.log(data._id);
-    if (data) {
-      navigate("/form-fill", { state: data._id });
-    }
+  function handleEdit(val) {
+    navigate("/form-fill", { state: val._id });
   }
 
   useEffect(() => {
