@@ -2,18 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import ConfirmModal from "./ConfirmModal";
 
 function BookDetails() {
   const navigate = useNavigate();
   const [formDetails, setFormDetails] = useState([]);
   const [loading, setloading] = useState(true);
   const [show, setshow] = useState(false);
+  const [deleteid, setdeleteid] = useState("");
 
   //   console.log(formDetails[0].state.title);
-
-  function handleClose() {
-    setshow(false);
-  }
 
   async function fetchData() {
     const res = await fetch("/all-details", {
@@ -30,12 +28,19 @@ function BookDetails() {
     }
   }
 
-  async function handleDelete() {
-    const id = localStorage.getItem("id");
-    console.log(id);
-
+  function handleClose() {
     setshow(false);
-    const res = await fetch(`/delete/${id}`, {
+  }
+
+  function handleDeleteOpenModal(val) {
+    setshow(true);
+    setdeleteid(val._id);
+  }
+
+  async function handleDelete() {
+    console.log(deleteid);
+    setshow(false);
+    const res = await fetch(`/delete/${deleteid}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -52,30 +57,22 @@ function BookDetails() {
     navigate("/form-fill", { state: val._id });
   }
 
+  // function alert() {
+  //   alert("hello");
+  // }
+
   useEffect(() => {
     fetchData();
   }, []);
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title className="text-center">Are you sure?</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          Do you really want to delete these records? This process cannot be
-          undone
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      ;
+      <ConfirmModal
+        modal={show}
+        deleteOne={handleDelete}
+        handleCloseNew={handleClose}
+      />
+
       <table className="table">
         <thead>
           <tr>
@@ -120,8 +117,7 @@ function BookDetails() {
                     <Button
                       variant="danger"
                       onClick={() => {
-                        setshow(true);
-                        localStorage.setItem("id", val._id);
+                        handleDeleteOpenModal(val);
                       }}
                     >
                       Delete
